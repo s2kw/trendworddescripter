@@ -8,14 +8,16 @@ credentials_path = Path(__file__).parent / "credentials.py"
 if credentials_path.exists():
     exec(open(credentials_path).read())
 
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+
 # Slack Webhook URL
-SLACK_WEBHOOK_URL = os.environ['SLACK_WEBHOOK_URL']
+SLACK_WEBHOOK_URL = os.environ.get('SLACK_WEBHOOK_URL')
 
 # ChatGPT API設定
 CHATGPT_URL = "https://api.openai.com/v1/chat/completions"
 CHATGPT_HEADERS = {
     "Content-Type": "application/json",
-    "Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"
+    "Authorization": f"Bearer {OPENAI_API_KEY}"
 }
 
 def get_explanation_from_chatgpt(word):
