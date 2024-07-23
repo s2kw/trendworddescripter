@@ -23,7 +23,7 @@ def get_explanation_from_chatgpt(word):
         "model": "gpt-4",
         "messages": [
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": f"{word}はTwitterのトレンドワードです。この単語について日本語で簡潔に説明しXの検索状態のURL( https://x.com/search?q=<ここに対象キーワードを入れる> )も一緒に返答をください。"}
+            {"role": "user", "content": f"{word}はTwitterのトレンドワードです。この単語について日本語で簡潔に説明し、Xの検索状態のURL (https://x.com/search?q={word} これが複数単語の場合は'+'で繋いでください) と解説時に利用したソースのURLも一緒に返答をください。解説ができなかった場合はTwitterの検索URLだけは貼ってください。"}
         ]
     }
     
@@ -36,41 +36,20 @@ def get_explanation_from_chatgpt(word):
         return None
 
 def post_to_slack(message):
-    payload = {"text": message}
+    payload = {
+        "attachments": [
+            {
+                "color": "#36a64f",  # 緑色のカラーコード
+                "text": message
+            }
+        ]
+    }
     try:
         response = requests.post(SLACK_WEBHOOK_URL, json=payload)
         response.raise_for_status()
         print(f"Message posted to Slack successfully\n{message}")
     except requests.RequestException as e:
         print(f"Error posting message to Slack: {e}")
-
-def get_trending_hashtags_from_web():
-    url = "https://trends24.in/"
-    try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        print(f"Response status code: {response.status_code}")
-        print(f"Response content preview: {response.text[:500]}...")
-
-        soup = BeautifulSoup(response.content, 'html.parser')
-        
-        # トレンドアイテムを取得する新しいセレクタ
-        trend_items = soup.select('li.trend-card__item')
-        
-        hashtags = []
-        for item in trend_items:
-            trend_text = item.get_text(strip=True)
-            if trend_text.startswith('#'):
-                hashtags.append(trend_text)
-        
-        print(f"Found hashtags: {hashtags}")
-        return hashtags[:10]  # 上位10件を返す
-    except requests.RequestException as e:
-        print(f"Error fetching trending hashtags: {e}")
-        return []
 
 def get_trending_topics_from_web():
     url = "https://trends24.in/"

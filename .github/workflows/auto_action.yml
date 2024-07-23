@@ -1,0 +1,25 @@
+name: Twitter Hashtag Analysis
+
+on:
+  schedule:
+    - cron: '0 0,8 * * *'  # UTCで毎日0時と8時に実行（JSTで9時と17時）
+  workflow_dispatch:  # 手動実行用
+
+jobs:
+  trendword-description:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run analysis script
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python askTrend.py
