@@ -1,4 +1,4 @@
-name: Twitter Hashtag Analysis
+name: Trend word description and post to slack
 
 on:
   schedule:
