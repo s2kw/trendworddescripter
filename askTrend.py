@@ -29,13 +29,21 @@ def get_explanation_from_chatgpt(word):
         ]
     }
     
-    try:
-        response = requests.post(CHATGPT_URL, json=payload, headers=CHATGPT_HEADERS)
-        response.raise_for_status()
-        return response.json()['choices'][0]['message']['content']
-    except requests.RequestException as e:
-        print(f"Error fetching explanation from ChatGPT: {e}")
-        return None
+    retries = 3
+    for _ in range(retries):
+        try:
+            response = requests.post(CHATGPT_URL, json=payload, headers=CHATGPT_HEADERS)
+            response.raise_for_status()
+            return response.json()['choices'][0]['text']
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:
+                print("Rate limit exceeded, waiting to retry...")
+                time.sleep(10)  # Wait for 10 seconds before retrying
+            else:
+                raise e  # Reraise the error if it's not a rate limit error
+        except requests.RequestException as e:
+            print(f"Error fetching explanation from ChatGPT: {e}")
+            return None
 
 def post_to_slack(message):
     payload = {
