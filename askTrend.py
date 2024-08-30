@@ -87,6 +87,11 @@ def get_trending_topics_from_web():
         print(f"Error fetching trending topics: {e}")
         return []
 
+def replace_hash(text):
+    # 文字列中の '#' を '%23' に置換
+    return text.replace('#', '%23')
+    
+
 def main():
     ranked_trending_topics = get_trending_topics_from_web()
     print(f"Ranked trending topics: {ranked_trending_topics}")
@@ -100,7 +105,7 @@ def main():
             message = f"第{rank}位「{topic}」の説明:\n{explanation}"
             post_to_slack(message)
         else:
-            post_to_slack(f"第{rank}位「{topic}」の説明を取得できませんでした。\nhttps://x.com/search?q={topic}")
+            post_to_slack(f"第{rank}位「{topic}」の説明を取得できませんでした。\nhttps://x.com/search?q={ replace_hash(topic) }")
 
 if __name__ == "__main__":
     main()
