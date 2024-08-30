@@ -1,4 +1,5 @@
 import requests
+import time
 import os
 from pathlib import Path
 from bs4 import BeautifulSoup
@@ -99,7 +100,7 @@ def main():
             message = f"第{rank}位「{topic}」の説明:\n{explanation}"
             post_to_slack(message)
         else:
-            post_to_slack(f"第{rank}位「{topic}」の説明を取得できませんでした。")
+            post_to_slack(f"第{rank}位「{topic}」の説明を取得できませんでした。\nhttps://x.com/search?q={topic}")
 
 if __name__ == "__main__":
     main()
