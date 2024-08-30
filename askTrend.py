@@ -23,7 +23,7 @@ CHATGPT_HEADERS = {
 
 def get_explanation_from_chatgpt(word):
     payload = {
-        "model": "gpt-4",
+        "model": "gpt-4o-mini",
         "messages": [
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": f"{word}はTwitterのトレンドワードです。この単語について日本語で簡潔に説明し、Xの検索状態のURL (https://x.com/search?q={word} これが複数単語の場合は'+'で繋いでください) と解説時に利用したソースのURLも一緒に返答をください。解説ができなかった場合はTwitterの検索URLだけは貼ってください。"}
