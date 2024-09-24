@@ -2,7 +2,7 @@ name: Trend word description and post to slack
 
 on:
   schedule:
-   - cron: '0 0,8 * * *'  # UTCで毎日0時と8時に実行（JSTで9時と17時）
+   - cron: '0 * * * *'  # UTCで毎日0時と8時に実行（JSTで9時と17時）
   workflow_dispatch:  # 手動実行用
 
 jobs:

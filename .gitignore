@@ -11,3 +11,4 @@
 # credentials
 credentials.py
 
+__pycache__

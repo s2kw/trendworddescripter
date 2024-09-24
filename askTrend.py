@@ -100,12 +100,13 @@ def main():
         return
 
     for rank, topic in ranked_trending_topics:
-        explanation = get_explanation_from_chatgpt(topic)
+        explanation = None #get_explanation_from_chatgpt(topic)
         if explanation:
             message = f"第{rank}位「{topic}」の説明:\n{explanation}"
             post_to_slack(message)
         else:
-            post_to_slack(f"第{rank}位「{topic}」の説明を取得できませんでした。\nhttps://x.com/search?q={ replace_hash(topic) }")
+#             post_to_slack(f"第{rank}位「{topic}」の説明を取得できませんでした。\nhttps://x.com/search?q={ replace_hash(topic) }")
+            post_to_slack(f"第{rank}位「{topic}」\nhttps://x.com/search?q={ replace_hash(topic) }")
 
 if __name__ == "__main__":
     main()
