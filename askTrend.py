@@ -3,6 +3,8 @@ import time
 import os
 from pathlib import Path
 from bs4 import BeautifulSoup
+from urllib.parse import quote_plus
+
 
 # credentials.py が存在する場合、それを実行して環境変数を設定
 credentials_path = Path(__file__).parent / "credentials.py"
@@ -22,11 +24,12 @@ CHATGPT_HEADERS = {
 }
 
 def get_explanation_from_chatgpt(word):
+    encoded_word = quote_plus(word)
     payload = {
         "model": "gpt-4o-mini",
         "messages": [
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": f"{word}はTwitterのトレンドワードです。この単語について日本語で簡潔に説明し、Xの検索状態のURL (https://x.com/search?q={word} これが複数単語の場合は'+'で繋いでください) と解説時に利用したソースのURLも一緒に返答をください。解説ができなかった場合はTwitterの検索URLだけは貼ってください。"}
+            {"role": "user", "content": f"{word}はTwitterのトレンドワードです。この単語について日本語で簡潔に説明し、(https://x.com/search?q={encoded_word}) と解説時に利用したソースのURLも一緒に返答をください。解説ができなかった場合はTwitterの検索URLだけは貼ってください。"}
         ]
     }
     
@@ -105,8 +108,9 @@ def main():
             message = f"第{rank}位「{topic}」の説明:\n{explanation}"
             post_to_slack(message)
         else:
+            encoded_topic = quote_plus(f'"{topic}"')
 #             post_to_slack(f"第{rank}位「{topic}」の説明を取得できませんでした。\nhttps://x.com/search?q={ replace_hash(topic) }")
-            post_to_slack(f"第{rank}位「{topic}」\nhttps://x.com/search?q={ replace_hash(topic) }")
+            post_to_slack(f"第{rank}位「{topic}」\nhttps://x.com/search?q={encoded_topic}")
 
 if __name__ == "__main__":
     main()
